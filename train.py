@@ -50,15 +50,22 @@ def train(args):
         pool_size=POOL_SIZE,
         init=initial_grid)
 
-    gt = pattern.load_pattern(args.pattern, max_size=min(grid_size))
+    gt_pattern = pattern.load_pattern(args.pattern, max_size=min(grid_size))
+    gt_grid = pattern.put_on_grid(gt_pattern, initial_grid.clone())
     net = model.CellNetwork(args.grid_channels)
-    optimizer = torch.optim.Adam(params=net.parameters(), weight_decay=1e-4)
-    loss = Loss(gt, net, MIN_ITER, MAX_ITER)
 
     checkpoint_callback = CheckpointCallback(
         net, args.checkpoint_steps, args.train_dir)
 
     summary_callback = SummaryCallback(args.train_dir)
+
+    if torch.cuda.is_available():
+        net = net.cuda()
+        initial_grid = initial_grid.cuda()
+        gt_grid = gt_grid.cuda()
+
+    optimizer = torch.optim.Adam(params=net.parameters(), weight_decay=1e-4)
+    loss = Loss(gt_grid, net, MIN_ITER, MAX_ITER)
 
     def train_basic():
         batch = initial_grid.unsqueeze(0).repeat(args.batch_size, 1, 1, 1)
@@ -141,7 +148,6 @@ def main():
         default='regenerative')
 
     args = parser.parse_args()
-
     train(args)
 
 
