@@ -4,8 +4,6 @@ import PIL
 import numpy as np
 
 
-
-
 def load_pattern(filename, max_size=None):
     img = PIL.Image.open(filename)
     if max_size is not None:
@@ -54,6 +52,7 @@ def tensor_to_img(x):
     img = x.detach().numpy()
     img = img.transpose(1, 2, 0)
     img = img[:,:,:4]
+    img = img.clip(0, 1)
     img = img * 255
     img = img.astype(np.uint8)
     return img
