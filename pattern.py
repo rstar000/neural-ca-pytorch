@@ -1,13 +1,13 @@
 import urllib
 import torch
-import PIL
+from PIL import Image
 import numpy as np
 
 
 def load_pattern(filename, max_size=None):
-    img = PIL.Image.open(filename)
+    img = Image.open(filename)
     if max_size is not None:
-        img.thumbnail((max_size, max_size), PIL.Image.ANTIALIAS)
+        img.thumbnail((max_size, max_size), Image.ANTIALIAS)
 
     img_np = np.array(img)
     # img_np[..., :3] *= img_np[..., 3][..., None]

@@ -22,7 +22,7 @@ class SamplePool:
         idxs, samples = self._sample(batch_size)
         batch = torch.stack(samples)
         samples, loss_vals = loss.forward(batch)
-        loss_vals = loss_vals.detach().cpu().numpy().flatten()
+        loss_vals = loss_vals.detach().cpu().numpy()
 
         order = np.argsort(loss_vals)[::-1]
         replaced = order[0]

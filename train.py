@@ -1,4 +1,5 @@
 import os
+import pathlib
 import argparse
 import torch
 
@@ -22,7 +23,7 @@ class CheckpointCallback:
         self._checkpoint_steps = checkpoint_steps
         self._dir = os.path.join(train_dir, 'checkpoints')
 
-        os.makedirs(self._dir, exist_ok=True)
+        pathlib.Path(self._dir).mkdir(parents=True, exist_ok=True)
 
     def __call__(self, step_num):
         if step_num and step_num % self._checkpoint_steps == 0:
@@ -42,7 +43,7 @@ class SummaryCallback:
 
 
 def train(args):
-    os.mkdir(args.train_dir, exist_ok=True)
+    pathlib.Path(args.train_dir).mkdir(parents=True, exist_ok=True)
 
     grid_size = model.Size(args.grid_size, args.grid_size)
     initial_grid = model.make_initial_grid(grid_size, args.grid_channels)

@@ -22,7 +22,9 @@ class Loss(nn.Module):
             x = self._net(x)
 
         gt_batch = _repeat(self._pattern, x.shape[0])
-        return x, self._loss(x[:,:4], gt_batch[:,:4])
+        mse = self._loss(x[:,:4], gt_batch[:,:4])
+
+        return x, mse.mean(dim=torch.Size([1,2,3]))
 
 
 def _repeat(x, n_times):
